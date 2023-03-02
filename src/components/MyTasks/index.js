@@ -55,7 +55,7 @@ class MyTasks extends Component {
   state = {
     tasksList: [],
     taskValue: '',
-    tagValue: tagsList[0].displayText,
+    tagValue: tagsList[0].optionId,
     filter: '',
   }
 
@@ -66,10 +66,10 @@ class MyTasks extends Component {
   changeFilter = event => {
     const {filter} = this.state
 
-    if (filter === event.target.textContent) {
+    if (filter === event.target.value) {
       this.setState({filter: ''})
     } else {
-      this.setState({filter: event.target.textContent})
+      this.setState({filter: event.target.value})
     }
   }
 
@@ -80,7 +80,11 @@ class MyTasks extends Component {
     if (taskValue.length !== 0) {
       const obj = {id: uuid(), taskValue, tagValue}
 
-      this.setState(prev => ({tasksList: [...prev.tasksList, obj]}))
+      this.setState(prev => ({
+        taskValue: '',
+        tagValue: tagsList[0].optionId,
+        tasksList: [...prev.tasksList, obj],
+      }))
     }
   }
 
@@ -89,12 +93,20 @@ class MyTasks extends Component {
 
     return (
       <TagItem key={each.optionId}>
-        {filter === each.displayText ? (
-          <SelectedTagButton type="button" onClick={this.changeFilter}>
+        {filter === each.optionId ? (
+          <SelectedTagButton
+            type="button"
+            onClick={this.changeFilter}
+            value={each.optionId}
+          >
             {each.displayText}
           </SelectedTagButton>
         ) : (
-          <TagButton type="button" onClick={this.changeFilter}>
+          <TagButton
+            type="button"
+            value={each.optionId}
+            onClick={this.changeFilter}
+          >
             {each.displayText}
           </TagButton>
         )}
@@ -119,10 +131,10 @@ class MyTasks extends Component {
             placeholder="Enter the task here"
             value={taskValue}
           />
-          <FormLabel htmlFor="task">Task</FormLabel>
-          <FormSelect value={tagValue} onChange={this.changeTagValue}>
+          <FormLabel htmlFor="tags">Tags</FormLabel>
+          <FormSelect id="tags" value={tagValue} onChange={this.changeTagValue}>
             {tagsList.map(each => (
-              <FormOption value={each.displayText} key={each.optionId}>
+              <FormOption value={each.optionId} key={each.optionId}>
                 {each.displayText}
               </FormOption>
             ))}
@@ -142,9 +154,7 @@ class MyTasks extends Component {
               {filteredList.map(each => (
                 <TaskItem key={each.id}>
                   <TaskName>{each.taskValue}</TaskName>
-                  <SelectedTagButton type="button">
-                    {each.tagValue}
-                  </SelectedTagButton>
+                  <SelectedTagButton as="p">{each.tagValue}</SelectedTagButton>
                 </TaskItem>
               ))}
             </TasksList>

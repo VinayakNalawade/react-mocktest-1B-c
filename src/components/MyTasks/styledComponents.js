@@ -126,7 +126,7 @@ export const TaskItem = styled.li`
   display: flex;
   justify-content: space-between;
 `
-export const TaskName = styled.h1`
+export const TaskName = styled.p`
   color: #ffffff;
   font-size: 18px;
   margin: 0;
